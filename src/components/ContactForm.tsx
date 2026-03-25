@@ -1,5 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, Lock } from 'lucide-react';
+
+declare global {
+  interface Window {
+    __wlTracking?: Record<string, string>;
+    dataLayer?: Record<string, unknown>[];
+  }
+}
+
+const HIDDEN_FIELDS = [
+  "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
+  "gclid", "gbraid", "wbraid", "gad_campaignid", "gad_source",
+  "fbclid", "fbc", "fbp",
+  "ttclid", "msclkid", "li_fat_id", "twclid", "sck",
+  "landing_page", "referrer", "user_agent", "first_visit",
+  "session_id", "session_attributes_encoded", "originPage", "ref"
+] as const;
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +24,13 @@ const ContactForm = () => {
     clientCount: '',
     niche: ''
   });
+
+  const [tracking, setTracking] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const stored = window.__wlTracking || {};
+    setTracking(stored);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -18,6 +41,41 @@ const ContactForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "form_submit_lead",
+      lead_name: formData.name || null,
+      lead_email: null,
+      lead_whatsapp: null,
+      utm_source: tracking.utm_source || null,
+      utm_medium: tracking.utm_medium || null,
+      utm_campaign: tracking.utm_campaign || null,
+      utm_content: tracking.utm_content || null,
+      utm_term: tracking.utm_term || null,
+      gclid: tracking.gclid || null,
+      gbraid: tracking.gbraid || null,
+      wbraid: tracking.wbraid || null,
+      gad_campaignid: tracking.gad_campaignid || null,
+      gad_source: tracking.gad_source || null,
+      fbclid: tracking.fbclid || null,
+      fbc: tracking.fbc || null,
+      fbp: tracking.fbp || null,
+      ttclid: tracking.ttclid || null,
+      msclkid: tracking.msclkid || null,
+      li_fat_id: tracking.li_fat_id || null,
+      twclid: tracking.twclid || null,
+      sck: tracking.sck || null,
+      landing_page: tracking.landing_page || null,
+      referrer: tracking.referrer || null,
+      user_agent: tracking.user_agent || null,
+      first_visit: tracking.first_visit || null,
+      session_id: tracking.session_id || null,
+      session_attributes_encoded: tracking.session_attributes_encoded || null,
+      origin_page: tracking.originPage || null,
+      ref: tracking.ref || null
+    });
+
     console.log('Application submitted:', formData);
     alert('Aplicação enviada. Entrarei em contato em breve.');
   };
@@ -25,7 +83,7 @@ const ContactForm = () => {
   return (
     <section id="application-form" className="py-24 bg-[#0a0a0a] relative bg-grid-pattern">
       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent pointer-events-none" />
-      
+
       <div className="container mx-auto px-6 max-w-2xl relative z-10">
         <div className="bg-[#111] border border-gray-800 p-8 md:p-12 shadow-2xl relative overflow-hidden">
           {/* Top colored bar */}
@@ -41,6 +99,17 @@ const ContactForm = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* ===== CAMPOS OCULTOS PADRAO GTM ===== */}
+            {HIDDEN_FIELDS.map((field) => (
+              <input
+                key={field}
+                type="hidden"
+                name={field}
+                id={`h_${field}`}
+                value={tracking[field] || ''}
+              />
+            ))}
+
             <div>
               <label className="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">Nome do Dono/Sócio</label>
               <input
@@ -116,4 +185,3 @@ const ContactForm = () => {
 };
 
 export default ContactForm;
-

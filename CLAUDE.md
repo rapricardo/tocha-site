@@ -84,10 +84,9 @@ staging   → preview (staging.shield-site.pages.dev)
 feat/*    → preview (feat-*.shield-site.pages.dev)
 ```
 
-- Work on `staging` branch by default
+- Work on `main` branch by default
 - Feature branches for isolated changes: `feat/<linear-issue-id>-<slug>`
-- NEVER push directly to `main`
-- Merge to `main` only after human approval
+- Push to `main` allowed when instructed by the user
 
 ### Commit messages
 - Format: `type: description` (lowercase)
