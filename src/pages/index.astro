@@ -307,7 +307,15 @@ import logoAmarelo from '../assets/logo-web-amarelo.webp';
         <!-- Barra superior amarela -->
         <div class="absolute top-0 left-0 w-full h-1 bg-yellow-500"></div>
 
+        <!-- Estado de sucesso -->
+        <div id="form-home-success" style="display:none" class="text-center py-8">
+          <h3 class="text-2xl font-bold font-industrial text-white uppercase mb-4">Diagnóstico recebido.</h3>
+          <p class="text-gray-400">Entraremos em contato em breve.</p>
+        </div>
+
         <form id="form-home" onsubmit="handleHomeFormSubmit(event)">
+          <!-- Estado de erro -->
+          <p id="form-home-error" style="display:none" class="text-red-500 text-sm mb-4 text-center">Erro ao enviar. Tente novamente.</p>
 
           <!-- ===== CAMPOS OCULTOS PADRAO GTM ===== -->
           <!-- UTM Parameters -->
@@ -448,7 +456,18 @@ import logoAmarelo from '../assets/logo-web-amarelo.webp';
   <script is:inline>
   function handleHomeFormSubmit(e) {
     e.preventDefault();
+    var form = e.target;
+    var btn = form.querySelector('button[type="submit"]');
+    var btnText = btn.querySelector('span') || btn;
+    btn.disabled = true;
+    btnText.textContent = 'Enviando...';
+
     var tracking = window.__wlTracking || {};
+    var formData = new FormData(form);
+    var payload = {};
+    formData.forEach(function(value, key) { payload[key] = value; });
+    Object.keys(tracking).forEach(function(k) { payload[k] = tracking[k]; });
+
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: "form_submit_lead",
@@ -482,7 +501,21 @@ import logoAmarelo from '../assets/logo-web-amarelo.webp';
       origin_page: tracking.originPage || null,
       ref: tracking.ref || null
     });
-    alert("Em produção, isso envia para o Typeform/Tally ou Webhook (n8n).");
+
+    fetch("https://api.datacrazy.io/v1/crm/api/crm/flows/webhooks/f1616bd8-5010-44ff-a1b5-05822e2d441c/b53e07bc-7454-4d31-8b42-efa5e0af8096", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function() {
+      var successDiv = document.getElementById('form-home-success');
+      if (successDiv) successDiv.style.display = 'block';
+      form.style.display = 'none';
+    }).catch(function() {
+      btn.disabled = false;
+      btnText.textContent = 'Solicitar Análise de Board';
+      var errorMsg = document.getElementById('form-home-error');
+      if (errorMsg) errorMsg.style.display = 'block';
+    });
   }
   </script>
 

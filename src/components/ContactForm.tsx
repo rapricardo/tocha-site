@@ -17,6 +17,8 @@ const HIDDEN_FIELDS = [
   "session_id", "session_attributes_encoded", "originPage", "ref"
 ] as const;
 
+const WEBHOOK_URL = "https://api.datacrazy.io/v1/crm/api/crm/flows/webhooks/f1616bd8-5010-44ff-a1b5-05822e2d441c/ba604eda-94f7-41d3-8e96-989e7d420c02";
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -26,6 +28,7 @@ const ContactForm = () => {
   });
 
   const [tracking, setTracking] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     const stored = window.__wlTracking || {};
@@ -39,8 +42,11 @@ const ContactForm = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatus('sending');
+
+    const payload = { ...formData, ...tracking };
 
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -76,8 +82,16 @@ const ContactForm = () => {
       ref: tracking.ref || null
     });
 
-    console.log('Application submitted:', formData);
-    alert('Aplicação enviada. Entrarei em contato em breve.');
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -98,7 +112,16 @@ const ContactForm = () => {
             </p>
           </div>
 
+          {status === 'success' ? (
+            <div className="text-center py-8">
+              <h3 className="text-2xl font-bold font-industrial text-white uppercase mb-4">Aplicação recebida.</h3>
+              <p className="text-gray-400">Entraremos em contato em breve.</p>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            {status === 'error' && (
+              <p className="text-red-500 text-sm text-center">Erro ao enviar. Tente novamente.</p>
+            )}
             {/* ===== CAMPOS OCULTOS PADRAO GTM ===== */}
             {HIDDEN_FIELDS.map((field) => (
               <input
@@ -167,10 +190,11 @@ const ContactForm = () => {
 
             <button
               type="submit"
-              className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 uppercase tracking-widest transition-all mt-4 flex items-center justify-center gap-2 group"
+              disabled={status === 'sending'}
+              className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-4 uppercase tracking-widest transition-all mt-4 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              [ Agendar Reunião de Parceria ]
-              <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              {status === 'sending' ? 'Enviando...' : '[ Agendar Reunião de Parceria ]'}
+              {status !== 'sending' && <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
             </button>
 
             <div className="flex items-center justify-center gap-2 text-xs text-gray-600 mt-4">
@@ -178,6 +202,7 @@ const ContactForm = () => {
               <span>Seus dados estão protegidos. Sem spam.</span>
             </div>
           </form>
+          )}
         </div>
       </div>
     </section>
