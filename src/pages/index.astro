@@ -532,9 +532,14 @@ import logoAmarelo from '../assets/logo-web-amarelo.webp';
       ref: tracking.ref || null
     });
 
-    fetch("https://api.datacrazy.io/v1/crm/api/crm/flows/webhooks/f1616bd8-5010-44ff-a1b5-05822e2d441c/b53e07bc-7454-4d31-8b42-efa5e0af8096", {
+    payload.source = "shield_home";
+
+    fetch("https://app.apolo.api.br/api/webhooks/lead-capture", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": "apolo_wh_FVAnpqSyFFqB11kkvj0FHrtylcceipOG"
+      },
       body: JSON.stringify(payload)
     }).then(function() {
       var successDiv = document.getElementById('form-home-success');

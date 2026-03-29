@@ -17,7 +17,8 @@ const HIDDEN_FIELDS = [
   "session_id", "session_attributes_encoded", "originPage", "ref"
 ] as const;
 
-const WEBHOOK_URL = "https://api.datacrazy.io/v1/crm/api/crm/flows/webhooks/f1616bd8-5010-44ff-a1b5-05822e2d441c/ba604eda-94f7-41d3-8e96-989e7d420c02";
+const WEBHOOK_URL = "https://app.apolo.api.br/api/webhooks/lead-capture";
+const API_KEY = "apolo_wh_FVAnpqSyFFqB11kkvj0FHrtylcceipOG";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -85,8 +86,11 @@ const ContactForm = () => {
     try {
       await fetch(WEBHOOK_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": API_KEY
+        },
+        body: JSON.stringify({ ...payload, source: "shield_churn" })
       });
       setStatus('success');
     } catch {
