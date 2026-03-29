@@ -1,0 +1,216 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import logoAmarelo from '../../assets/logo-web-amarelo.webp';
+import ServiceEcosystem from '../../components/service/ServiceEcosystem.astro';
+import ServiceCTA from '../../components/service/ServiceCTA.astro';
+---
+
+<Layout
+  title="Prospecção Inteligente via WhatsApp com IA — Ricardo Tocha"
+  description="Captura automatizada de leads em grupos de WhatsApp. Monitoramento 24/7, abordagem em menos de 60 segundos, custo por lead zero."
+>
+
+  <!-- NAV -->
+  <nav class="fixed w-full z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/">
+        <Image src={logoAmarelo} alt="Ricardo Tocha" width={160} height={40} class="h-8 w-auto" />
+      </a>
+      <div class="hidden md:flex items-center gap-4">
+        <a href="/#auditoria" class="bg-yellow-500 text-black text-xs font-bold uppercase tracking-widest px-4 py-2 hover:bg-yellow-400 transition-colors">
+          Iniciar Diagnóstico
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-6 pt-20 pb-4">
+    <a href="/" class="inline-block border border-gray-700 text-xs font-bold uppercase tracking-widest text-gray-300 px-4 py-2 hover:bg-white hover:text-black transition-colors">← Voltar para Home</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="relative min-h-[80vh] flex items-center pt-8 pb-20 px-6 border-b border-gray-800 bg-grid-pattern overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/50 via-transparent to-[#0a0a0a]"></div>
+    <div class="max-w-5xl mx-auto w-full relative z-10 text-center">
+
+      <div class="inline-flex items-center gap-2 border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-xs font-bold uppercase tracking-widest font-mono px-4 py-1.5 mb-8">
+        APOLO • apolo.api.br
+      </div>
+
+      <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold font-industrial text-white uppercase tracking-tight leading-[1.1] mb-8">
+        Leads qualificados extraídos de grupos de WhatsApp. Custo por lead: R$ 0.
+      </h1>
+
+      <div class="max-w-2xl mx-auto mb-12">
+        <p class="text-lg md:text-xl text-gray-400 font-light leading-relaxed">
+          O Apolo monitora grupos de WhatsApp 24/7, identifica intenções de compra em tempo real e aborda o lead no direct antes do concorrente. Prospecção orgânica automatizada — sem tráfego pago.
+        </p>
+      </div>
+
+      <a href="/#auditoria" class="inline-flex items-center gap-2 bg-yellow-500 text-black font-bold uppercase tracking-widest px-8 py-4 text-sm hover:bg-yellow-400 transition-colors">
+        Aplicar para Intervenção Estratégica
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+      <p class="text-gray-600 text-xs mt-4 uppercase tracking-widest font-mono">
+        Também disponível como SaaS standalone em <a href="https://apolo.api.br/" target="_blank" rel="noopener noreferrer" class="text-yellow-600 hover:text-yellow-500 transition-colors">apolo.api.br</a>
+      </p>
+
+    </div>
+  </section>
+
+  <!-- O PROBLEMA -->
+  <section class="py-24 px-6 border-b border-gray-800 bg-[#0f0f0f]">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-16">
+        <span class="inline-flex items-center gap-2 text-yellow-500 font-mono text-sm mb-4">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          O Problema
+        </span>
+        <h2 class="text-3xl md:text-5xl font-bold font-industrial text-white uppercase tracking-tight max-w-3xl leading-none">
+          Por que você perde leads para o concorrente todo dia.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Card 1: Prospecção Manual -->
+        <div class="border border-gray-800 p-8 hover:border-yellow-500/50 transition-colors bg-[#0a0a0a]">
+          <div class="shrink-0 p-3 bg-black border border-gray-700 inline-block mb-4">
+            <!-- Users icon -->
+            <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold font-industrial text-white uppercase tracking-tight mb-3">Prospecção Manual</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Sua equipe gasta horas por dia vasculhando grupos de WhatsApp atrás de oportunidades. Quando encontram, já é tarde. A abordagem manual não escala e não é consistente.</p>
+        </div>
+
+        <!-- Card 2: Timing Errado -->
+        <div class="border border-gray-800 p-8 hover:border-yellow-500/50 transition-colors bg-[#0a0a0a]">
+          <div class="shrink-0 p-3 bg-black border border-gray-700 inline-block mb-4">
+            <!-- Zap icon -->
+            <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold font-industrial text-white uppercase tracking-tight mb-3">Timing Errado</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Um lead posta "alguém indica um fornecedor de X?" no grupo. Em 5 minutos, 8 concorrentes responderam. Seu vendedor viu 3 horas depois. A janela de oportunidade tem 5 minutos — não 5 horas.</p>
+        </div>
+
+        <!-- Card 3: Dependência de Tráfego Pago -->
+        <div class="border border-gray-800 p-8 hover:border-yellow-500/50 transition-colors bg-[#0a0a0a]">
+          <div class="shrink-0 p-3 bg-black border border-gray-700 inline-block mb-4">
+            <!-- Currency / dollar icon -->
+            <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold font-industrial text-white uppercase tracking-tight mb-3">Dependência de Tráfego Pago</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Todo lead da sua empresa vem de Google Ads ou Meta Ads. O CPL sobe a cada trimestre. Se o orçamento de mídia congela, o pipeline seca. Zero diversificação de canal.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- A INTERVENÇÃO -->
+  <section class="py-24 px-6 border-b border-gray-800 bg-[#0a0a0a]">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-16">
+        <span class="inline-flex items-center gap-2 text-yellow-500 font-mono text-sm mb-4">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
+          A Intervenção
+        </span>
+        <h2 class="text-3xl md:text-5xl font-bold font-industrial text-white uppercase tracking-tight max-w-3xl leading-none">
+          Como o Apolo opera na sua empresa.
+        </h2>
+      </div>
+
+      <div class="max-w-3xl space-y-10">
+
+        <div class="flex gap-6 items-start">
+          <div class="shrink-0 w-10 h-10 bg-yellow-500 text-black flex items-center justify-center font-bold font-industrial text-lg">1</div>
+          <div>
+            <h3 class="text-lg font-bold font-industrial text-white uppercase tracking-tight mb-2">Mapeamento de Grupos</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Identificação dos grupos de WhatsApp com maior concentração de potenciais compradores do seu segmento. Volume, perfil e frequência de oportunidades.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 items-start">
+          <div class="shrink-0 w-10 h-10 bg-yellow-500 text-black flex items-center justify-center font-bold font-industrial text-lg">2</div>
+          <div>
+            <h3 class="text-lg font-bold font-industrial text-white uppercase tracking-tight mb-2">Definição de Gatilhos</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Configuração de palavras-chave de intenção de compra específicas para o seu mercado. Filtros que eliminam ruído e capturam apenas oportunidades reais.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 items-start">
+          <div class="shrink-0 w-10 h-10 bg-yellow-500 text-black flex items-center justify-center font-bold font-industrial text-lg">3</div>
+          <div>
+            <h3 class="text-lg font-bold font-industrial text-white uppercase tracking-tight mb-2">Ativação do Monitoramento 24/7</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">A IA monitora continuamente, identifica o lead e envia uma abordagem personalizada via DM — em menos de 60 segundos. Comportamento humano simulado para segurança da conta.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 items-start">
+          <div class="shrink-0 w-10 h-10 bg-yellow-500 text-black flex items-center justify-center font-bold font-industrial text-lg">4</div>
+          <div>
+            <h3 class="text-lg font-bold font-industrial text-white uppercase tracking-tight mb-2">Otimização Contínua</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">Refinamento dos gatilhos com base nos resultados. Análise de taxa de resposta, qualificação e conversão. Ajuste fino mensal.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROVA: CASE REZULTZ -->
+  <section class="py-24 px-6 border-b border-gray-800 bg-[#0f0f0f]">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-16">
+        <span class="inline-flex items-center gap-2 text-yellow-500 font-mono text-sm mb-4">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Caso Real
+        </span>
+        <h2 class="text-3xl md:text-5xl font-bold font-industrial text-white uppercase tracking-tight leading-none">
+          REZULTZ — War Room de Vendas
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-gray-800">
+
+        <div class="p-8 md:p-10 border-b md:border-b-0 md:border-r border-gray-800">
+          <p class="text-yellow-500 font-mono text-xs uppercase tracking-widest mb-4">O Sangramento</p>
+          <p class="text-gray-300 text-sm leading-relaxed">Equipe comercial travada por excesso de burocracia — planilhas fragmentadas, processos 100% manuais e gestores sem visibilidade real da operação.</p>
+        </div>
+
+        <div class="p-8 md:p-10 border-b md:border-b-0 md:border-r border-gray-800">
+          <p class="text-yellow-500 font-mono text-xs uppercase tracking-widest mb-4">A Intervenção</p>
+          <p class="text-gray-300 text-sm leading-relaxed">Desenvolvemos um War Room de vendas com visão completa de metas e carteira de clientes, integrado ao WhatsApp e ao funil de análise de crédito — eliminando planilhas e ferramentas dispersas.</p>
+        </div>
+
+        <div class="p-8 md:p-10">
+          <p class="text-yellow-500 font-mono text-xs uppercase tracking-widest mb-4">O Lucro Protegido</p>
+          <p class="text-gray-300 text-sm leading-relaxed">Previsibilidade restaurada, TPV e receita em crescimento, onboarding de novos clientes agilizado e fim das análises manuais prolongadas.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ECOSSISTEMA DE SERVIÇOS -->
+  <ServiceEcosystem currentTool="apolo" />
+
+  <!-- CTA FINAL -->
+  <ServiceCTA />
+
+</Layout>
