@@ -1,0 +1,14 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import CadastroForm from '../../components/membros/CadastroForm';
+
+const erro = Astro.url.searchParams.get('erro');
+---
+
+<Layout title="Criar Conta — Área de Membros" description="Crie sua conta para acessar conteúdo exclusivo sobre produção de vídeo com IA">
+  <section class="min-h-screen flex items-center justify-center py-20 px-6">
+    <CadastroForm erro={erro} client:load />
+  </section>
+</Layout>

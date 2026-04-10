@@ -1,0 +1,15 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import RecuperarSenhaForm from '../../components/membros/RecuperarSenhaForm';
+
+const erro = Astro.url.searchParams.get('erro');
+const msg = Astro.url.searchParams.get('msg');
+---
+
+<Layout title="Recuperar Senha — Área de Membros" description="Recupere sua senha da área de membros">
+  <section class="min-h-screen flex items-center justify-center py-20 px-6">
+    <RecuperarSenhaForm erro={erro} msg={msg} client:load />
+  </section>
+</Layout>
