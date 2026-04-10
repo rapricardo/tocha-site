@@ -1,0 +1,27 @@
+import type { APIRoute } from 'astro';
+import { getSession } from '../../lib/auth';
+import { markLessonComplete } from '../../lib/auth';
+
+export const prerender = false;
+
+export const POST: APIRoute = async ({ request, cookies }) => {
+  const session = await getSession(cookies);
+  if (!session) {
+    return new Response(JSON.stringify({ error: 'Não autenticado' }), { status: 401 });
+  }
+
+  const body = await request.json();
+  const { lessonSlug } = body;
+
+  if (!lessonSlug || typeof lessonSlug !== 'string') {
+    return new Response(JSON.stringify({ error: 'lessonSlug obrigatório' }), { status: 400 });
+  }
+
+  const success = await markLessonComplete(session.user.id, lessonSlug);
+
+  if (!success) {
+    return new Response(JSON.stringify({ error: 'Falha ao salvar progresso' }), { status: 500 });
+  }
+
+  return new Response(JSON.stringify({ ok: true }), { status: 200 });
+};
