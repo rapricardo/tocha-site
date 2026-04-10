@@ -11,7 +11,7 @@
 
 ## Stack
 
-- **Framework:** Astro 5.x (static output, no SSR)
+- **Framework:** Astro 5.x (static + SSR hybrid via Cloudflare adapter)
 - **CSS:** Tailwind 4 via `@tailwindcss/vite` — DO NOT install `@astrojs/tailwind`
 - **TypeScript:** strict mode (`astro/tsconfigs/strict`)
 - **Images:** `src/assets/` for optimized images, `public/` only for favicon/robots/OG
@@ -117,3 +117,31 @@ See `docs/brand.md` for:
 ## Pages
 
 See `docs/sitemap.md` for the complete page list and hierarchy.
+
+## Área de Membros
+
+- **Auth:** Supabase Auth (email + senha)
+- **Banco:** Supabase PostgreSQL (profiles, lesson_progress, payments)
+- **Pagamento:** Stripe Checkout hosted
+- **Webhook:** Cloudflare Worker em `workers/stripe-webhook/`
+- **Middleware:** `src/middleware.ts` protege rotas `/membros/*`
+- **SSR:** Rotas `/membros/*` e `/api/*` usam SSR (`export const prerender = false`)
+- **Funil:** 4 landing pages por persona + 3 vídeos públicos + página de oferta em `/video-ia/`
+
+### Variáveis de ambiente (Cloudflare Pages)
+
+```
+SUPABASE_URL
+SUPABASE_ANON_KEY
+STRIPE_SECRET_KEY
+STRIPE_PUBLISHABLE_KEY
+STRIPE_PRICE_ID
+```
+
+### Variáveis de ambiente (Worker stripe-webhook)
+
+```
+SUPABASE_URL (var)
+SUPABASE_SERVICE_ROLE_KEY (secret)
+STRIPE_WEBHOOK_SECRET (secret)
+```
