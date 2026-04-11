@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly STRIPE_SECRET_KEY: string;
   readonly STRIPE_PUBLISHABLE_KEY: string;
   readonly STRIPE_PRICE_ID: string;
+  readonly ASAAS_API_KEY: string;
 }
 
 interface ImportMeta {

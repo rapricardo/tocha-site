@@ -77,3 +77,17 @@ export async function markLessonComplete(userId: string, lessonSlug: string) {
 
   return !error;
 }
+
+export async function getUserAccess(userId: string): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('user_access')
+    .select('product_slug')
+    .eq('user_id', userId);
+
+  if (error) return [];
+  return data.map((r) => r.product_slug);
+}
+
+export function hasAccess(accessList: string[], productSlug: string): boolean {
+  return accessList.includes(productSlug);
+}
