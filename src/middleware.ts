@@ -1,5 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
-import { getSession, getUserProfile, getUserAccess, hasAccess } from './lib/auth';
+import { getSession, getUserAccess, hasAccess } from './lib/auth';
 
 const PUBLIC_MEMBER_ROUTES = [
   '/membros/login',
