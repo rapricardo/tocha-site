@@ -1,5 +1,5 @@
 {
-  "name": "stripe-webhook-tocha",
+  "name": "payment-webhook-tocha",
   "private": true,
   "type": "module",
   "scripts": {
