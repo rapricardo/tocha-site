@@ -19,6 +19,7 @@ declare namespace App {
       name: string;
       whatsapp: string | null;
       paid: boolean;
+      asaas_customer_id?: string | null;
       created_at: string;
     };
     accessSlugs?: string[];

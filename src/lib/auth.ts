@@ -49,7 +49,7 @@ export function clearSessionCookies(cookies: AstroCookies) {
 export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, name, whatsapp, paid, created_at')
+    .select('id, email, name, whatsapp, paid, asaas_customer_id, created_at')
     .eq('id', userId)
     .single();
 

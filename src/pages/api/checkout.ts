@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
-import Stripe from 'stripe';
-import { getSession } from '../../lib/auth';
+import { getSession, getUserProfile } from '../../lib/auth';
+import { findOrCreateCustomer, createPayment } from '../../lib/asaas';
+import { supabase } from '../../lib/supabase';
 
 export const prerender = false;
 
@@ -10,29 +11,56 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     return redirect('/membros/login/');
   }
 
-  const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY);
+  const formData = await request.formData();
+  const productSlug = formData.get('productSlug')?.toString() || 'maquina-videos';
 
-  const origin = new URL(request.url).origin;
+  // Buscar produto
+  const { data: product, error: productError } = await supabase
+    .from('products')
+    .select('*')
+    .eq('slug', productSlug)
+    .eq('active', true)
+    .single();
 
-  const checkoutSession = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    customer_email: session.user.email,
-    line_items: [
-      {
-        price: import.meta.env.STRIPE_PRICE_ID,
-        quantity: 1,
-      },
-    ],
-    success_url: `${origin}/membros/?compra=sucesso`,
-    cancel_url: `${origin}/video-ia/oferta/`,
-    metadata: {
-      supabase_user_id: session.user.id,
-    },
-  });
-
-  if (!checkoutSession.url) {
-    return redirect('/membros/?erro=checkout');
+  if (productError || !product) {
+    return redirect('/membros/?erro=produto-nao-encontrado');
   }
 
-  return redirect(checkoutSession.url);
+  // Buscar perfil para nome
+  const profile = await getUserProfile(session.user.id);
+  const customerName = profile?.name || session.user.email || 'Cliente';
+  const customerEmail = session.user.email!;
+
+  // Criar ou buscar customer no Asaas
+  let customerId = profile?.asaas_customer_id;
+
+  if (!customerId) {
+    customerId = await findOrCreateCustomer(customerEmail, customerName);
+
+    // Salvar asaas_customer_id no profile
+    await supabase
+      .from('profiles')
+      .update({ asaas_customer_id: customerId })
+      .eq('id', session.user.id);
+  }
+
+  const origin = new URL(request.url).origin;
+  const externalReference = `${session.user.id}|${productSlug}`;
+
+  const valueInReais = product.price_cents / 100;
+  const installmentValue = product.max_installments > 1
+    ? Math.round((valueInReais / product.max_installments) * 100) / 100
+    : undefined;
+
+  const invoiceUrl = await createPayment({
+    customerId,
+    value: valueInReais,
+    description: product.name,
+    externalReference,
+    installmentCount: product.max_installments > 1 ? product.max_installments : undefined,
+    installmentValue,
+    successUrl: `${origin}/membros/?compra=sucesso`,
+  });
+
+  return redirect(invoiceUrl);
 };
