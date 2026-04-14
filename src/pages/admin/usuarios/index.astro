@@ -1,0 +1,140 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { createAdminClient } from '../../../lib/supabase-admin';
+
+const admin = createAdminClient();
+
+const search = (Astro.url.searchParams.get('q') ?? '').trim();
+const pageRaw = Astro.url.searchParams.get('page') ?? '1';
+const page = Math.max(1, parseInt(pageRaw, 10) || 1);
+const PAGE_SIZE = 20;
+const from = (page - 1) * PAGE_SIZE;
+const to = from + PAGE_SIZE - 1;
+
+let query = admin
+  .from('profiles')
+  .select('id, email, name, whatsapp, role, paid, created_at', { count: 'exact' })
+  .order('created_at', { ascending: false });
+
+if (search) {
+  // busca por email OU name (case insensitive)
+  const like = `%${search}%`;
+  query = query.or(`email.ilike.${like},name.ilike.${like}`);
+}
+
+query = query.range(from, to);
+
+const { data: usuarios, error, count } = await query;
+
+const totalPages = count ? Math.max(1, Math.ceil(count / PAGE_SIZE)) : 1;
+
+type Usuario = {
+  id: string;
+  email: string;
+  name: string | null;
+  whatsapp: string | null;
+  role: string | null;
+  paid: boolean | null;
+  created_at: string;
+};
+
+const lista = (usuarios || []) as Usuario[];
+
+const formatDate = (iso: string) => new Date(iso).toLocaleDateString('pt-BR');
+---
+
+<AdminLayout title="Admin — Usuários" activeSection="usuarios">
+  <div class="mb-8">
+    <h1 class="font-industrial uppercase text-white text-2xl tracking-wider mb-1">
+      Usuários
+    </h1>
+    <p class="text-gray-500 text-xs font-mono uppercase tracking-wider">
+      {count ?? 0} usuário(s) no total
+    </p>
+  </div>
+
+  {error && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono">
+      Erro ao carregar: {error.message}
+    </div>
+  )}
+
+  <!-- Busca -->
+  <form method="GET" class="mb-6 flex items-center gap-3 flex-wrap">
+    <input type="text" name="q" value={search} placeholder="Buscar por email ou nome"
+      class="bg-[#0a0a0a] border border-gray-700 text-white p-2 focus:border-yellow-500 focus:outline-none font-mono text-xs min-w-[280px]" />
+    <button type="submit"
+      class="border border-gray-700 text-gray-300 hover:border-yellow-500 hover:text-yellow-500 py-2 px-3 text-xs font-mono uppercase tracking-wider">
+      Buscar
+    </button>
+    {search && (
+      <a href="/admin/usuarios/" class="text-xs font-mono text-gray-500 hover:text-white uppercase tracking-wider">
+        limpar
+      </a>
+    )}
+  </form>
+
+  <div class="bg-[#111] border border-gray-800 overflow-x-auto">
+    {lista.length === 0 ? (
+      <p class="px-6 py-12 text-center text-gray-500 text-sm font-mono uppercase tracking-wider">
+        Nenhum usuário encontrado
+      </p>
+    ) : (
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b border-gray-800">
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">E-mail</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Nome</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Role</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Cadastro</th>
+            <th class="text-right px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lista.map((u) => (
+            <tr class="border-b border-gray-800/50 hover:bg-white/5">
+              <td class="px-6 py-3 text-sm font-mono text-gray-300">{u.email}</td>
+              <td class="px-6 py-3 text-sm text-white">{u.name ?? '—'}</td>
+              <td class="px-6 py-3 text-xs font-mono uppercase">
+                {u.role === 'admin'
+                  ? <span class="text-yellow-500">admin</span>
+                  : <span class="text-gray-500">{u.role ?? 'user'}</span>
+                }
+              </td>
+              <td class="px-6 py-3 text-sm font-mono text-gray-500">{formatDate(u.created_at)}</td>
+              <td class="px-6 py-3 text-right">
+                <a href={`/admin/usuarios/${u.id}/`}
+                  class="text-xs font-mono uppercase tracking-wider text-yellow-500 hover:text-yellow-400">
+                  Abrir
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+
+  <!-- Paginação -->
+  {totalPages > 1 && (
+    <div class="mt-6 flex items-center justify-center gap-2 text-xs font-mono">
+      {page > 1 && (
+        <a href={`/admin/usuarios/?${search ? `q=${encodeURIComponent(search)}&` : ''}page=${page - 1}`}
+          class="border border-gray-700 text-gray-300 hover:border-yellow-500 hover:text-yellow-500 py-2 px-3 uppercase tracking-wider">
+          ← Anterior
+        </a>
+      )}
+      <span class="text-gray-500 uppercase tracking-wider px-3">
+        Página {page} de {totalPages}
+      </span>
+      {page < totalPages && (
+        <a href={`/admin/usuarios/?${search ? `q=${encodeURIComponent(search)}&` : ''}page=${page + 1}`}
+          class="border border-gray-700 text-gray-300 hover:border-yellow-500 hover:text-yellow-500 py-2 px-3 uppercase tracking-wider">
+          Próxima →
+        </a>
+      )}
+    </div>
+  )}
+</AdminLayout>

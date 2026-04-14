@@ -1,0 +1,212 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { createAdminClient } from '../../../lib/supabase-admin';
+
+const { id } = Astro.params;
+if (!id) return Astro.redirect('/admin/usuarios/');
+
+const admin = createAdminClient();
+
+const { data: profile, error: profileError } = await admin
+  .from('profiles')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+if (profileError || !profile) {
+  return Astro.redirect('/admin/usuarios/?erro=usuario-nao-encontrado');
+}
+
+const { data: acessos } = await admin
+  .from('user_access')
+  .select('id, product_slug, granted_at, cohort_id, cohorts(name)')
+  .eq('user_id', id)
+  .order('granted_at', { ascending: false });
+
+const { data: produtos } = await admin
+  .from('products')
+  .select('slug, name, type')
+  .eq('active', true)
+  .order('name');
+
+const { data: turmas } = await admin
+  .from('cohorts')
+  .select('id, product_slug, name')
+  .eq('active', true)
+  .order('starts_at', { ascending: false });
+
+const erro = Astro.url.searchParams.get('erro');
+const msg = Astro.url.searchParams.get('msg');
+
+const formatDate = (iso: string) => new Date(iso).toLocaleDateString('pt-BR');
+
+type Acesso = {
+  id: string;
+  product_slug: string;
+  granted_at: string;
+  cohort_id: string | null;
+  cohorts: { name?: string | null } | { name?: string | null }[] | null;
+};
+
+function getCohortFromRow(row: Acesso): { name?: string | null } | null {
+  if (!row.cohorts) return null;
+  if (Array.isArray(row.cohorts)) return row.cohorts[0] ?? null;
+  return row.cohorts;
+}
+
+const acessosList = (acessos || []) as Acesso[];
+---
+
+<AdminLayout title={`Admin — ${profile.email}`} activeSection="usuarios">
+  <div class="mb-8 flex items-center gap-4">
+    <a href="/admin/usuarios/" class="text-xs font-mono uppercase tracking-wider text-gray-500 hover:text-yellow-500">
+      ← Voltar
+    </a>
+  </div>
+
+  <h1 class="font-industrial uppercase text-white text-2xl tracking-wider mb-1">
+    {profile.name || profile.email}
+  </h1>
+  <p class="text-gray-500 text-xs font-mono uppercase tracking-wider mb-8">
+    ID: {profile.id}
+  </p>
+
+  {msg === 'acesso-concedido' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono max-w-3xl">
+      Acesso concedido.
+    </div>
+  )}
+  {msg === 'acesso-revogado' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono max-w-3xl">
+      Acesso revogado.
+    </div>
+  )}
+  {erro && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono max-w-3xl">
+      Erro: {erro}
+    </div>
+  )}
+
+  <!-- Perfil -->
+  <div class="max-w-3xl mb-10">
+    <h2 class="font-industrial uppercase text-white text-lg tracking-wider mb-4">
+      Perfil
+    </h2>
+    <div class="bg-[#111] border border-gray-800 p-6 space-y-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <p class="text-xs font-mono uppercase tracking-wider text-gray-500 mb-1">E-mail</p>
+          <p class="font-mono text-white">{profile.email}</p>
+        </div>
+        <div>
+          <p class="text-xs font-mono uppercase tracking-wider text-gray-500 mb-1">Nome</p>
+          <p class="text-white">{profile.name || '—'}</p>
+        </div>
+        <div>
+          <p class="text-xs font-mono uppercase tracking-wider text-gray-500 mb-1">WhatsApp</p>
+          <p class="font-mono text-white">{profile.whatsapp || '—'}</p>
+        </div>
+        <div>
+          <p class="text-xs font-mono uppercase tracking-wider text-gray-500 mb-1">Role</p>
+          <p class="font-mono uppercase text-white">{profile.role || 'user'}</p>
+        </div>
+        <div>
+          <p class="text-xs font-mono uppercase tracking-wider text-gray-500 mb-1">Cliente Asaas</p>
+          <p class="font-mono text-white">{profile.asaas_customer_id || '—'}</p>
+        </div>
+        <div>
+          <p class="text-xs font-mono uppercase tracking-wider text-gray-500 mb-1">Cadastro</p>
+          <p class="font-mono text-white">{formatDate(profile.created_at)}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acessos -->
+  <div class="max-w-3xl mb-10">
+    <h2 class="font-industrial uppercase text-white text-lg tracking-wider mb-4">
+      Acessos ({acessosList.length})
+    </h2>
+    <div class="bg-[#111] border border-gray-800 overflow-x-auto">
+      {acessosList.length === 0 ? (
+        <p class="px-6 py-8 text-center text-gray-500 text-sm font-mono uppercase tracking-wider">
+          Nenhum acesso concedido
+        </p>
+      ) : (
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="border-b border-gray-800">
+              <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Produto</th>
+              <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Turma</th>
+              <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Concedido em</th>
+              <th class="text-right px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {acessosList.map((a) => {
+              const cohort = getCohortFromRow(a);
+              return (
+                <tr class="border-b border-gray-800/50 hover:bg-white/5">
+                  <td class="px-6 py-3 text-sm font-mono text-white">{a.product_slug}</td>
+                  <td class="px-6 py-3 text-sm text-gray-300">{cohort?.name ?? '—'}</td>
+                  <td class="px-6 py-3 text-sm font-mono text-gray-500">{formatDate(a.granted_at)}</td>
+                  <td class="px-6 py-3 text-right">
+                    <form method="POST" action={`/api/admin/usuarios/${profile.id}/revoke`} class="inline">
+                      <input type="hidden" name="product_slug" value={a.product_slug} />
+                      <button type="submit" onclick="return confirm('Revogar acesso?')"
+                        class="text-xs font-mono uppercase tracking-wider text-red-500 hover:text-red-400">
+                        Revogar
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </div>
+
+  <!-- Conceder acesso -->
+  <div class="max-w-3xl">
+    <h2 class="font-industrial uppercase text-white text-lg tracking-wider mb-4">
+      Conceder acesso manual
+    </h2>
+    <form method="POST" action={`/api/admin/usuarios/${profile.id}/grant`}>
+      <div class="bg-[#111] border border-gray-800 p-6 space-y-6">
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">Produto *</label>
+          <select name="product_slug" required
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm">
+            <option value="">— selecione —</option>
+            {(produtos || []).map((p) => (
+              <option value={p.slug}>{p.slug} — {p.name} ({p.type})</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">Turma (opcional)</label>
+          <select name="cohort_id"
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm">
+            <option value="">— nenhuma —</option>
+            {(turmas || []).map((t) => (
+              <option value={t.id}>[{t.product_slug}] {t.name}</option>
+            ))}
+          </select>
+          <p class="text-xs font-mono text-gray-600 mt-2">
+            Para produtos do tipo "mentoring", selecione a turma do aluno.
+          </p>
+        </div>
+      </div>
+      <div class="mt-6">
+        <button type="submit"
+          class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 uppercase tracking-widest text-xs transition-colors">
+          Conceder acesso
+        </button>
+      </div>
+    </form>
+  </div>
+</AdminLayout>
