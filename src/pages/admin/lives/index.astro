@@ -1,0 +1,145 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { createAdminClient } from '../../../lib/supabase-admin';
+
+const admin = createAdminClient();
+
+const nowIso = new Date().toISOString();
+
+const { data: upcomingData } = await admin
+  .from('events')
+  .select('id, slug, title, starts_at, duration_minutes, category, visibility, meet_url, recording_youtube_id')
+  .gte('starts_at', nowIso)
+  .order('starts_at', { ascending: true });
+
+const { data: pastData, error } = await admin
+  .from('events')
+  .select('id, slug, title, starts_at, duration_minutes, category, visibility, meet_url, recording_youtube_id')
+  .lt('starts_at', nowIso)
+  .order('starts_at', { ascending: false });
+
+const msg = Astro.url.searchParams.get('msg');
+const erro = Astro.url.searchParams.get('erro');
+
+type EventRow = {
+  id: string;
+  slug: string;
+  title: string;
+  starts_at: string;
+  duration_minutes: number;
+  category: string;
+  visibility: string;
+  meet_url: string | null;
+  recording_youtube_id: string | null;
+};
+
+const upcoming = (upcomingData || []) as EventRow[];
+const past = (pastData || []) as EventRow[];
+const lista: EventRow[] = [...upcoming, ...past];
+
+const formatDateTime = (iso: string) =>
+  new Date(iso).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+const statusOf = (e: EventRow) => {
+  const ms = new Date(e.starts_at).getTime();
+  if (ms > Date.now()) return 'upcoming';
+  if (e.recording_youtube_id) return 'has_recording';
+  return 'past';
+};
+---
+
+<AdminLayout title="Admin — Lives" activeSection="lives">
+  <div class="flex items-start justify-between mb-8 gap-4">
+    <div>
+      <h1 class="font-industrial uppercase text-white text-2xl tracking-wider mb-1">
+        Lives
+      </h1>
+      <p class="text-gray-500 text-xs font-mono uppercase tracking-wider">
+        Encontros ao vivo e gravações
+      </p>
+    </div>
+    <a href="/admin/lives/nova/"
+      class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-5 uppercase tracking-widest text-xs transition-colors">
+      + Nova live
+    </a>
+  </div>
+
+  {msg === 'criada' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">Live criada.</div>
+  )}
+  {msg === 'salvo' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">Live atualizada.</div>
+  )}
+  {msg === 'deletada' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">Live removida.</div>
+  )}
+  {erro && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono">Erro: {erro}</div>
+  )}
+  {error && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono">
+      Erro ao carregar: {error.message}
+    </div>
+  )}
+
+  <div class="bg-[#111] border border-gray-800 overflow-x-auto">
+    {lista.length === 0 ? (
+      <p class="px-6 py-12 text-center text-gray-500 text-sm font-mono uppercase tracking-wider">
+        Nenhuma live cadastrada
+      </p>
+    ) : (
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b border-gray-800">
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Status</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Quando</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Slug</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Título</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Categoria</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Visibilidade</th>
+            <th class="text-right px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lista.map((e) => {
+            const status = statusOf(e);
+            return (
+              <tr class="border-b border-gray-800/50 hover:bg-white/5">
+                <td class="px-6 py-3">
+                  {status === 'upcoming' && (
+                    <span class="text-yellow-500 text-[10px] font-mono uppercase border border-yellow-500/30 bg-yellow-500/10 px-2 py-1 tracking-wider">agendada</span>
+                  )}
+                  {status === 'has_recording' && (
+                    <span class="text-green-500 text-[10px] font-mono uppercase border border-green-500/30 bg-green-500/10 px-2 py-1 tracking-wider">gravada</span>
+                  )}
+                  {status === 'past' && (
+                    <span class="text-gray-500 text-[10px] font-mono uppercase border border-gray-700 bg-white/5 px-2 py-1 tracking-wider">passada</span>
+                  )}
+                </td>
+                <td class="px-6 py-3 text-sm font-mono text-gray-400">{formatDateTime(e.starts_at)}</td>
+                <td class="px-6 py-3 text-sm font-mono text-gray-400">{e.slug}</td>
+                <td class="px-6 py-3 text-sm text-white">{e.title}</td>
+                <td class="px-6 py-3 text-xs font-mono uppercase text-gray-400">{e.category}</td>
+                <td class="px-6 py-3 text-xs font-mono uppercase text-gray-400">{e.visibility}</td>
+                <td class="px-6 py-3 text-right">
+                  <a href={`/admin/lives/${e.id}/`}
+                    class="text-xs font-mono uppercase tracking-wider text-yellow-500 hover:text-yellow-400">
+                    Editar
+                  </a>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    )}
+  </div>
+</AdminLayout>
