@@ -1,0 +1,128 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { createAdminClient } from '../../../lib/supabase-admin';
+
+const admin = createAdminClient();
+
+const { data: produtos, error } = await admin
+  .from('products')
+  .select('id, slug, name, price_cents, type, category, active, max_installments, created_at')
+  .order('created_at', { ascending: false });
+
+const msg = Astro.url.searchParams.get('msg');
+const erro = Astro.url.searchParams.get('erro');
+
+const currencyFmt = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+});
+const formatCurrency = (cents: number) => currencyFmt.format(cents / 100);
+
+type Produto = {
+  id: string;
+  slug: string;
+  name: string;
+  price_cents: number;
+  type: string | null;
+  category: string | null;
+  active: boolean | null;
+  max_installments: number | null;
+  created_at: string;
+};
+
+const lista = (produtos || []) as Produto[];
+---
+
+<AdminLayout title="Admin — Produtos" activeSection="produtos">
+  <div class="flex items-start justify-between mb-8 gap-4">
+    <div>
+      <h1 class="font-industrial uppercase text-white text-2xl tracking-wider mb-1">
+        Produtos
+      </h1>
+      <p class="text-gray-500 text-xs font-mono uppercase tracking-wider">
+        Catálogo de produtos do sistema
+      </p>
+    </div>
+    <a
+      href="/admin/produtos/novo/"
+      class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-5 uppercase tracking-widest text-xs transition-colors"
+    >
+      + Novo produto
+    </a>
+  </div>
+
+  {msg === 'criado' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">
+      Produto criado com sucesso.
+    </div>
+  )}
+  {msg === 'atualizado' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">
+      Produto atualizado.
+    </div>
+  )}
+  {msg === 'deletado' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">
+      Produto desativado.
+    </div>
+  )}
+  {erro && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono">
+      Erro: {erro}
+    </div>
+  )}
+  {error && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono">
+      Erro ao carregar produtos: {error.message}
+    </div>
+  )}
+
+  <div class="bg-[#111] border border-gray-800 overflow-x-auto">
+    {lista.length === 0 ? (
+      <p class="px-6 py-12 text-center text-gray-500 text-sm font-mono uppercase tracking-wider">
+        Nenhum produto cadastrado
+      </p>
+    ) : (
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b border-gray-800">
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Slug</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Nome</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Tipo</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Categoria</th>
+            <th class="text-right px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Preço</th>
+            <th class="text-center px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Ativo</th>
+            <th class="text-right px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lista.map((p) => (
+            <tr class="border-b border-gray-800/50 hover:bg-white/5">
+              <td class="px-6 py-3 text-sm font-mono text-gray-400">{p.slug}</td>
+              <td class="px-6 py-3 text-sm text-white">{p.name}</td>
+              <td class="px-6 py-3 text-xs font-mono uppercase text-gray-400">{p.type ?? '—'}</td>
+              <td class="px-6 py-3 text-xs font-mono uppercase text-gray-400">{p.category ?? '—'}</td>
+              <td class="px-6 py-3 text-sm font-mono text-white text-right">{formatCurrency(p.price_cents)}</td>
+              <td class="px-6 py-3 text-center">
+                {p.active
+                  ? <span class="text-green-500 text-xs font-mono uppercase">sim</span>
+                  : <span class="text-gray-600 text-xs font-mono uppercase">não</span>
+                }
+              </td>
+              <td class="px-6 py-3 text-right">
+                <a
+                  href={`/admin/produtos/${p.id}/`}
+                  class="text-xs font-mono uppercase tracking-wider text-yellow-500 hover:text-yellow-400"
+                >
+                  Editar
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+</AdminLayout>

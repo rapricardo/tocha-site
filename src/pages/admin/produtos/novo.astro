@@ -1,0 +1,149 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+const erro = Astro.url.searchParams.get('erro');
+---
+
+<AdminLayout title="Admin — Novo produto" activeSection="produtos">
+  <div class="mb-8 flex items-center gap-4">
+    <a
+      href="/admin/produtos/"
+      class="text-xs font-mono uppercase tracking-wider text-gray-500 hover:text-yellow-500"
+    >
+      ← Voltar
+    </a>
+  </div>
+
+  <h1 class="font-industrial uppercase text-white text-2xl tracking-wider mb-1">
+    Novo produto
+  </h1>
+  <p class="text-gray-500 text-xs font-mono uppercase tracking-wider mb-8">
+    Preencha os dados do produto
+  </p>
+
+  {erro && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono max-w-3xl">
+      Erro: {erro}
+    </div>
+  )}
+
+  <form method="POST" action="/api/admin/produtos/criar" class="max-w-3xl">
+    <div class="bg-[#111] border border-gray-800 p-6 space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+            Slug *
+          </label>
+          <input type="text" name="slug" required
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm"
+            placeholder="ex: maquina-videos" />
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+            Nome *
+          </label>
+          <input type="text" name="name" required
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none text-sm" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+            Tipo *
+          </label>
+          <select name="type" required
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm">
+            <option value="infoproduct">infoproduct</option>
+            <option value="mentoring">mentoring</option>
+            <option value="live_access">live_access</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+            Categoria *
+          </label>
+          <select name="category" required
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm">
+            <option value="geral">geral</option>
+            <option value="empreendedor">empreendedor</option>
+            <option value="empregado">empregado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+            Preço (centavos) *
+          </label>
+          <input type="number" name="price_cents" required min="0" step="1"
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm"
+            placeholder="ex: 92780 = R$ 927,80" />
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+            Máx. parcelas
+          </label>
+          <input type="number" name="max_installments" min="1" step="1" value="1"
+            class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+          Caminho de download (infoproduct)
+        </label>
+        <input type="text" name="download_path"
+          class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm"
+          placeholder="ex: maquina-videos.zip" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+          Descrição curta
+        </label>
+        <textarea name="short_description" rows="2"
+          class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none text-sm"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+          Descrição longa
+        </label>
+        <textarea name="long_description" rows="4"
+          class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none text-sm"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-mono text-gray-500 mb-1 uppercase tracking-wider">
+          Produtos incluídos (slugs separados por vírgula)
+        </label>
+        <input type="text" name="includes_products"
+          class="w-full bg-[#0a0a0a] border border-gray-700 text-white p-3 focus:border-yellow-500 focus:outline-none font-mono text-sm"
+          placeholder="ex: maquina-videos, mentoria-basica" />
+      </div>
+
+      <div class="flex items-center gap-3">
+        <input type="checkbox" name="active" id="active" value="on" checked
+          class="w-4 h-4 accent-yellow-500" />
+        <label for="active" class="text-xs font-mono text-gray-400 uppercase tracking-wider">
+          Ativo
+        </label>
+      </div>
+    </div>
+
+    <div class="mt-6 flex items-center gap-4">
+      <button type="submit"
+        class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 uppercase tracking-widest text-xs transition-colors">
+        Criar produto
+      </button>
+      <a href="/admin/produtos/"
+        class="text-xs font-mono uppercase tracking-wider text-gray-500 hover:text-white">
+        Cancelar
+      </a>
+    </div>
+  </form>
+</AdminLayout>
