@@ -53,13 +53,14 @@ interface UserProfile {
   whatsapp: string | null;
   paid: boolean;
   asaas_customer_id: string | null;
+  role: string;
   created_at: string;
 }
 
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, name, whatsapp, paid, asaas_customer_id, created_at')
+    .select('id, email, name, whatsapp, paid, asaas_customer_id, role, created_at')
     .eq('id', userId)
     .single();
 

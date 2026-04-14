@@ -4,16 +4,24 @@ export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import Dashboard from '../../components/membros/Dashboard';
 import { getUserProfile, getLessonProgress, getUserAccess } from '../../lib/auth';
+import { getLessonsByCategory } from '../../lib/categories';
 
 const session = Astro.locals.session!;
-const profile = Astro.locals.profile || await getUserProfile(session.user.id);
+const profile = await getUserProfile(session.user.id);
 const progress = await getLessonProgress(session.user.id);
 const completedSlugs = progress.map((p) => p.lesson_slug);
 const accessSlugs = await getUserAccess(session.user.id);
+const categories = await getLessonsByCategory();
 
 const acesso = Astro.url.searchParams.get('acesso');
 const compra = Astro.url.searchParams.get('compra');
-const mensagem = acesso === 'bloqueado' ? 'bloqueado' : compra === 'sucesso' ? 'sucesso' : null;
+const msgParam = Astro.url.searchParams.get('msg');
+const mensagem = acesso === 'bloqueado' ? 'bloqueado'
+  : compra === 'sucesso' ? 'sucesso'
+  : msgParam === 'senha-atualizada' ? 'senha-atualizada'
+  : null;
+
+const isAdmin = profile?.role === 'admin';
 ---
 
 <Layout title="Área de Membros — Máquina de Vídeos com IA" description="Seu painel de aprendizado">
@@ -22,16 +30,15 @@ const mensagem = acesso === 'bloqueado' ? 'bloqueado' : compra === 'sucesso' ? '
       name={profile?.name || ''}
       accessSlugs={accessSlugs}
       completedSlugs={completedSlugs}
+      categories={categories}
       mensagem={mensagem}
+      isAdmin={isAdmin}
       client:load
     />
 
     <div class="max-w-2xl mx-auto mt-12 text-center space-y-3">
       <div>
-        <a
-          href="/membros/minha-conta/"
-          class="text-xs font-mono text-gray-500 hover:text-yellow-500 uppercase tracking-wider transition-colors"
-        >
+        <a href="/membros/minha-conta/" class="text-xs font-mono text-gray-500 hover:text-yellow-500 uppercase tracking-wider transition-colors">
           Minha Conta
         </a>
       </div>

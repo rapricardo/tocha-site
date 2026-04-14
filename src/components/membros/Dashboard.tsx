@@ -1,94 +1,33 @@
-import { AlertTriangle, CheckCircle, ShoppingCart } from 'lucide-react';
+import { AlertTriangle, CheckCircle, ShoppingCart, Shield } from 'lucide-react';
 import LessonCard from './LessonCard';
 import type { LessonInfo } from './LessonCard';
+
+interface LessonFromDB {
+  id: string;
+  product_slug: string;
+  slug: string;
+  title: string;
+  description: string | null;
+  type: string;
+  is_free: boolean;
+  order_index: number;
+  category: string;
+}
+
+interface CategoryGroupProps {
+  category: string;
+  label: string;
+  description: string;
+  lessons: LessonFromDB[];
+}
 
 interface DashboardProps {
   name: string;
   accessSlugs: string[];
   completedSlugs: string[];
   mensagem?: string | null;
-}
-
-const FREE_LESSONS: Omit<LessonInfo, 'completed' | 'locked'>[] = [
-  {
-    slug: 'oportunidade',
-    title: 'A Oportunidade',
-    description: 'Entenda o cenário atual e a oportunidade que poucos estão aproveitando.',
-    href: '/membros/aulas/oportunidade',
-    paid: false,
-  },
-  {
-    slug: 'demonstracao',
-    title: 'Demonstração',
-    description: 'Veja na prática como funciona o processo completo.',
-    href: '/membros/aulas/demonstracao',
-    paid: false,
-  },
-  {
-    slug: 'como-vender',
-    title: 'Como Vender',
-    description: 'Aprenda a abordagem de vendas que gera resultados consistentes.',
-    href: '/membros/aulas/como-vender',
-    paid: false,
-  },
-];
-
-const PAID_LESSONS: Omit<LessonInfo, 'completed' | 'locked'>[] = [
-  {
-    slug: 'introducao',
-    title: 'Introdução ao Método',
-    description: 'Fundamentos e visão geral do método completo.',
-    href: '/membros/aulas/introducao',
-    paid: true,
-  },
-  {
-    slug: 'skills',
-    title: 'Skills Essenciais',
-    description: 'As habilidades técnicas que você precisa dominar.',
-    href: '/membros/aulas/skills',
-    paid: true,
-  },
-  {
-    slug: 'workflow',
-    title: 'Workflow Completo',
-    description: 'O fluxo de trabalho otimizado do início ao fim.',
-    href: '/membros/aulas/workflow',
-    paid: true,
-  },
-  {
-    slug: 'download',
-    title: 'Downloads e Recursos',
-    description: 'Templates, planilhas e materiais de apoio.',
-    href: '/membros/aulas/download',
-    paid: true,
-  },
-];
-
-function buildLessons(
-  templates: Omit<LessonInfo, 'completed' | 'locked'>[],
-  completedSlugs: string[],
-  allLocked: boolean
-): LessonInfo[] {
-  const lessons: LessonInfo[] = [];
-
-  for (let i = 0; i < templates.length; i++) {
-    const template = templates[i];
-    const completed = completedSlugs.includes(template.slug);
-
-    let locked = allLocked;
-    if (!allLocked && i > 0) {
-      const prevSlug = templates[i - 1].slug;
-      locked = !completedSlugs.includes(prevSlug);
-    }
-
-    lessons.push({
-      ...template,
-      completed,
-      locked,
-    });
-  }
-
-  return lessons;
+  categories: CategoryGroupProps[];
+  isAdmin: boolean;
 }
 
 const MSG_CONFIG: Record<string, { icon: typeof AlertTriangle; color: string; bg: string; border: string; text: string }> = {
@@ -97,34 +36,62 @@ const MSG_CONFIG: Record<string, { icon: typeof AlertTriangle; color: string; bg
     color: 'text-yellow-500',
     bg: 'bg-yellow-500/10',
     border: 'border-yellow-500/30',
-    text: 'Complete as aulas anteriores para desbloquear esta aula.',
+    text: 'Você não tem acesso a esse conteúdo. Desbloqueie abaixo.',
   },
   sucesso: {
     icon: CheckCircle,
     color: 'text-green-500',
     bg: 'bg-green-500/10',
     border: 'border-green-500/30',
-    text: 'Aula marcada como concluída com sucesso!',
+    text: 'Compra confirmada. Bem-vindo ao conteúdo completo.',
+  },
+  'senha-atualizada': {
+    icon: CheckCircle,
+    color: 'text-green-500',
+    bg: 'bg-green-500/10',
+    border: 'border-green-500/30',
+    text: 'Senha atualizada com sucesso.',
   },
 };
 
-const Dashboard = ({ name, accessSlugs, completedSlugs, mensagem }: DashboardProps) => {
-  const hasMaquinaAccess = accessSlugs.includes('maquina-videos');
-  const freeLessons = buildLessons(FREE_LESSONS, completedSlugs, false);
-  const paidLessons = buildLessons(PAID_LESSONS, completedSlugs, !hasMaquinaAccess);
+function buildLessonInfo(lesson: LessonFromDB, accessSlugs: string[], completedSlugs: string[]): LessonInfo {
+  const hasAccess = lesson.is_free || accessSlugs.includes(lesson.product_slug);
+  return {
+    slug: lesson.slug,
+    title: lesson.title,
+    description: lesson.description || '',
+    href: `/membros/aulas/${lesson.slug}/`,
+    completed: completedSlugs.includes(lesson.slug),
+    locked: !hasAccess,
+    paid: !lesson.is_free,
+  };
+}
 
+const Dashboard = ({ name, accessSlugs, completedSlugs, mensagem, categories, isAdmin }: DashboardProps) => {
+  const hasMaquinaAccess = accessSlugs.includes('maquina-videos');
   const msgConfig = mensagem ? MSG_CONFIG[mensagem] : null;
 
   return (
     <div className="max-w-3xl mx-auto">
       {/* Header */}
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold font-industrial text-white uppercase mb-2">
-          Bem-vindo, {name}
-        </h1>
-        <p className="text-gray-500 text-sm font-mono">
-          {hasMaquinaAccess ? 'ACESSO COMPLETO' : 'ACESSO GRATUITO'}
-        </p>
+      <div className="mb-10 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold font-industrial text-white uppercase mb-2">
+            Bem-vindo, {name}
+          </h1>
+          <p className="text-gray-500 text-sm font-mono">
+            {hasMaquinaAccess ? 'ACESSO COMPLETO' : 'ACESSO GRATUITO'}
+          </p>
+        </div>
+        {isAdmin && (
+          <a
+            href="/admin/"
+            className="inline-flex items-center gap-2 border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-xs font-mono uppercase tracking-wider px-3 py-2 hover:bg-yellow-500/20 transition-colors shrink-0"
+          >
+            <Shield className="w-3 h-3" />
+            Admin
+          </a>
+        )}
       </div>
 
       {/* Mensagem */}
@@ -135,26 +102,14 @@ const Dashboard = ({ name, accessSlugs, completedSlugs, mensagem }: DashboardPro
         </div>
       )}
 
-      {/* Aulas gratuitas */}
-      <div className="mb-10">
-        <h2 className="font-industrial text-white uppercase text-lg mb-4 border-b border-gray-800 pb-2">
-          Aulas Gratuitas
-        </h2>
-        <div className="space-y-3">
-          {freeLessons.map((lesson) => (
-            <LessonCard key={lesson.slug} lesson={lesson} />
-          ))}
-        </div>
-      </div>
-
-      {/* CTA para checkout */}
+      {/* CTA de compra se não tiver acesso à máquina */}
       {!hasMaquinaAccess && (
         <div className="bg-[#111] border border-yellow-500/30 p-8 mb-10 text-center">
           <h3 className="font-industrial text-white uppercase text-xl mb-2">
-            Desbloqueie o conteudo completo
+            Desbloqueie o conteúdo completo
           </h3>
           <p className="text-gray-500 text-sm mb-6">
-            Acesse todas as aulas, templates e recursos exclusivos.
+            Acesse a Máquina de Produção completa: 66 arquivos, skills e templates prontos.
           </p>
           <form method="POST" action="/api/checkout">
             <input type="hidden" name="productSlug" value="maquina-videos" />
@@ -172,17 +127,33 @@ const Dashboard = ({ name, accessSlugs, completedSlugs, mensagem }: DashboardPro
         </div>
       )}
 
-      {/* Aulas pagas */}
-      <div className="mb-10">
-        <h2 className="font-industrial text-white uppercase text-lg mb-4 border-b border-gray-800 pb-2">
-          Conteudo Completo
-        </h2>
-        <div className="space-y-3">
-          {paidLessons.map((lesson) => (
-            <LessonCard key={lesson.slug} lesson={lesson} />
-          ))}
+      {/* Categorias de aulas */}
+      {categories.length === 0 && (
+        <p className="text-gray-500 text-sm font-mono text-center py-12">
+          Nenhuma aula disponível ainda.
+        </p>
+      )}
+
+      {categories.map((cat) => (
+        <div key={cat.category} className="mb-10">
+          <div className="mb-4 border-b border-gray-800 pb-2">
+            <h2 className="font-industrial text-white uppercase text-lg">
+              {cat.label}
+            </h2>
+            {cat.description && (
+              <p className="text-gray-600 text-xs font-mono mt-1">{cat.description}</p>
+            )}
+          </div>
+          <div className="space-y-3">
+            {cat.lessons.map((lesson) => (
+              <LessonCard
+                key={lesson.slug}
+                lesson={buildLessonInfo(lesson, accessSlugs, completedSlugs)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 };
