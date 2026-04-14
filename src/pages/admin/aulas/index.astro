@@ -1,0 +1,157 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { createAdminClient } from '../../../lib/supabase-admin';
+
+const admin = createAdminClient();
+
+const filterProduct = Astro.url.searchParams.get('produto') ?? '';
+
+const { data: produtos } = await admin
+  .from('products')
+  .select('slug, name')
+  .eq('active', true)
+  .order('name');
+
+let query = admin
+  .from('lessons')
+  .select('id, product_slug, slug, title, type, order_index, category, is_free')
+  .order('product_slug')
+  .order('order_index', { ascending: true });
+
+if (filterProduct) {
+  query = query.eq('product_slug', filterProduct);
+}
+
+const { data: aulas, error } = await query;
+
+const msg = Astro.url.searchParams.get('msg');
+const erro = Astro.url.searchParams.get('erro');
+
+type Aula = {
+  id: string;
+  product_slug: string | null;
+  slug: string;
+  title: string;
+  type: string;
+  order_index: number;
+  category: string | null;
+  is_free: boolean | null;
+};
+
+const lista = (aulas || []) as Aula[];
+---
+
+<AdminLayout title="Admin — Aulas" activeSection="aulas">
+  <div class="flex items-start justify-between mb-8 gap-4">
+    <div>
+      <h1 class="font-industrial uppercase text-white text-2xl tracking-wider mb-1">
+        Aulas
+      </h1>
+      <p class="text-gray-500 text-xs font-mono uppercase tracking-wider">
+        Conteúdos dos produtos
+      </p>
+    </div>
+    <a
+      href="/admin/aulas/nova/"
+      class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-5 uppercase tracking-widest text-xs transition-colors"
+    >
+      + Nova aula
+    </a>
+  </div>
+
+  {msg === 'criada' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">
+      Aula criada.
+    </div>
+  )}
+  {msg === 'atualizada' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">
+      Aula atualizada.
+    </div>
+  )}
+  {msg === 'deletada' && (
+    <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm p-3 mb-6 font-mono">
+      Aula removida.
+    </div>
+  )}
+  {erro && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono">
+      Erro: {erro}
+    </div>
+  )}
+  {error && (
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 mb-6 font-mono">
+      Erro ao carregar aulas: {error.message}
+    </div>
+  )}
+
+  <!-- Filtro por produto -->
+  <form method="GET" class="mb-6 flex items-center gap-3">
+    <label class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+      Filtrar por produto:
+    </label>
+    <select name="produto"
+      class="bg-[#0a0a0a] border border-gray-700 text-white p-2 focus:border-yellow-500 focus:outline-none font-mono text-xs">
+      <option value="">Todos</option>
+      {(produtos || []).map((p) => (
+        <option value={p.slug} selected={p.slug === filterProduct}>{p.slug}</option>
+      ))}
+    </select>
+    <button type="submit"
+      class="border border-gray-700 text-gray-300 hover:border-yellow-500 hover:text-yellow-500 py-2 px-3 text-xs font-mono uppercase tracking-wider">
+      Aplicar
+    </button>
+    {filterProduct && (
+      <a href="/admin/aulas/" class="text-xs font-mono text-gray-500 hover:text-white uppercase tracking-wider">
+        limpar
+      </a>
+    )}
+  </form>
+
+  <div class="bg-[#111] border border-gray-800 overflow-x-auto">
+    {lista.length === 0 ? (
+      <p class="px-6 py-12 text-center text-gray-500 text-sm font-mono uppercase tracking-wider">
+        Nenhuma aula cadastrada
+      </p>
+    ) : (
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b border-gray-800">
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Produto</th>
+            <th class="text-center px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Ordem</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Slug</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Título</th>
+            <th class="text-left px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Tipo</th>
+            <th class="text-center px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Grátis</th>
+            <th class="text-right px-6 py-3 text-xs font-mono uppercase tracking-wider text-gray-500 font-normal">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lista.map((a) => (
+            <tr class="border-b border-gray-800/50 hover:bg-white/5">
+              <td class="px-6 py-3 text-sm font-mono text-gray-400">{a.product_slug ?? '—'}</td>
+              <td class="px-6 py-3 text-sm font-mono text-gray-500 text-center">{a.order_index}</td>
+              <td class="px-6 py-3 text-sm font-mono text-gray-400">{a.slug}</td>
+              <td class="px-6 py-3 text-sm text-white">{a.title}</td>
+              <td class="px-6 py-3 text-xs font-mono uppercase text-gray-400">{a.type}</td>
+              <td class="px-6 py-3 text-center">
+                {a.is_free
+                  ? <span class="text-green-500 text-xs font-mono uppercase">sim</span>
+                  : <span class="text-gray-600 text-xs font-mono uppercase">não</span>
+                }
+              </td>
+              <td class="px-6 py-3 text-right">
+                <a href={`/admin/aulas/${a.id}/`}
+                  class="text-xs font-mono uppercase tracking-wider text-yellow-500 hover:text-yellow-400">
+                  Editar
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+</AdminLayout>
