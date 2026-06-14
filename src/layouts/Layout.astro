@@ -4,12 +4,48 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  noindex?: boolean;
 }
 
 const {
-  title = 'Infraestrutura de Retenção para Agências',
-  description = 'Infraestrutura de Retenção para Agências - Parceria Estratégica Para Agências de Performance (B2B2B)',
+  title = 'Ricardo Tocha — Sistemas reais construídos com IA',
+  description = 'Ajudo profissionais a fazer sozinhos, com IA, o trabalho que antes exigia uma equipe. Sistemas reais, em produção — construídos e operados por uma pessoa só.',
+  ogImage = '/og-image.png',
+  noindex = false,
 } = Astro.props;
+
+const siteUrl = 'https://ricardotocha.com.br';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const ogImageUrl = new URL(ogImage, siteUrl).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${siteUrl}/#person`,
+      name: 'Ricardo Tocha',
+      url: siteUrl,
+      jobTitle: 'Construtor de sistemas com IA',
+      description:
+        'Ajudo profissionais a fazer sozinhos, com IA, o trabalho que antes exigia uma equipe — e provo que funciona mostrando os sistemas reais que construo e opero todos os dias.',
+      knowsAbout: [
+        'Inteligência Artificial',
+        'Automação de operações comerciais',
+        'Agentes de IA',
+        'Desenvolvimento de software com IA',
+      ],
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}/#organization`,
+      name: 'Ricardo Tocha',
+      url: siteUrl,
+      founder: { '@id': `${siteUrl}/#person` },
+    },
+  ],
+};
 
 const currentYear = new Date().getFullYear();
 ---
@@ -21,7 +57,29 @@ const currentYear = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Ricardo Tocha" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">

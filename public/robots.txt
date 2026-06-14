@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /membros/
+Disallow: /api/
+
+Sitemap: https://ricardotocha.com.br/sitemap.xml
