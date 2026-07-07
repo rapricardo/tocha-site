@@ -28,6 +28,10 @@ const jsonLd = {
       name: 'Ricardo Tocha',
       url: siteUrl,
       jobTitle: 'Construtor de sistemas com IA',
+      sameAs: [
+        'https://www.instagram.com/ricardotocha.com.br',
+        'https://www.linkedin.com/in/ricardo-ramos-6453a49b',
+      ],
       description:
         'Ajudo profissionais a fazer sozinhos, com IA, o trabalho que antes exigia uma equipe — e provo que funciona mostrando os sistemas reais que construo e opero todos os dias.',
       knowsAbout: [
@@ -138,6 +142,8 @@ const currentYear = new Date().getFullYear();
           © {currentYear} Ricardo Tocha
         </p>
         <div class="flex items-center gap-5 text-gray-600">
+          <a href="/sobre/" class="hover:text-yellow-500 transition-colors uppercase tracking-widest">Sobre</a>
+          <a href="/blog/" class="hover:text-yellow-500 transition-colors uppercase tracking-widest">Blog</a>
           <a href="/manifesto/" class="hover:text-yellow-500 transition-colors uppercase tracking-widest">Manifesto</a>
           <a href="/circulo/" class="hover:text-yellow-500 transition-colors uppercase tracking-widest">Círculo</a>
           <a href="/membros/login/" class="hover:text-yellow-500 transition-colors uppercase tracking-widest">Login</a>
