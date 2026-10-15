@@ -1,0 +1,6 @@
+---
+import ServicePage from "../../layouts/ServicePage.astro";
+---
+<ServicePage title="Agências · Marketing e atendimento | Ricardo Tocha" description="Atuo com a agência e a empresa para entender falhas entre captação, atendimento e continuidade comercial, e implementar o que precisa mudar." label="Agências · Marketing e atendimento" heading="O trabalho continua depois que o lead chega." intro="Atuo com a agência e a empresa para entender falhas entre captação, atendimento e continuidade comercial, e implementar o que precisa mudar." context="a passagem dos leads de marketing para o atendimento">
+<section class="site-section"><div class="site-wrap"><div class="site-grid"><article class="site-item"><h2>Entender a passagem</h2><p>Conferir como o contato chega, quem assume e como o andamento retorna para a agência. Qualidade da captação e atendimento precisam ser avaliados juntos.</p></article><article class="site-item"><h2>Organizar a execução</h2><p>Definir responsáveis, próximos passos e informações compartilhadas. Integrar ferramentas e ajustar o processo conforme o problema.</p></article><article class="site-item"><h2>Acompanhar o efeito</h2><p>Revisar a execução e os indicadores escolhidos com o cliente. Prazo, participação de cada parte e condições são definidos conforme o trabalho.</p></article></div></div></section>
+</ServicePage>

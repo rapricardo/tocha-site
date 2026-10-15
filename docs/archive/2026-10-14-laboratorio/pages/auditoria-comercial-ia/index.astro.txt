@@ -1,0 +1,6 @@
+---
+import ServicePage from "../../layouts/ServicePage.astro";
+---
+<ServicePage title="Athena · Operação comercial | Ricardo Tocha" description="Com Athena, analiso conversas e dados comerciais. Conduzo com o gestor a transformação dos achados em ações com a equipe, prazo e revisão." label="Athena · Operação comercial" heading="Proposta enviada. Quem dá o próximo passo?" intro="Com Athena, analiso conversas e dados comerciais. Conduzo com o gestor a transformação dos achados em ações com a equipe, prazo e revisão." context="como minha equipe acompanha propostas e próximos passos">
+<section class="site-section"><div class="site-wrap"><div class="site-grid"><article class="site-item"><h2>O problema</h2><p>O CRM diz “em negociação”, mas a conversa não tem continuidade. Precisamos entender o que impede o próximo passo: processo, informação, ferramenta ou orientação.</p></article><article class="site-item"><h2>O trabalho</h2><p>Reunir exemplos, escolher o problema prioritário e definir a mudança. Implementar o apoio necessário e combinar responsável, prazo e forma de acompanhamento.</p></article><article class="site-item"><h2>A revisão</h2><p>Conferir se a ação aconteceu e o que mudou no indicador. Um painel apoia essa leitura; o trabalho continua com o gestor e a equipe.</p></article></div></div></section>
+</ServicePage>

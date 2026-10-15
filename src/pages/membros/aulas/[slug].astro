@@ -37,15 +37,15 @@ if (!lesson.is_free) {
 const nextLesson = await getNextLesson(supabase, lesson.product_slug, lesson.order_index);
 
 // Se o usuário ainda não tem acesso ao produto da próxima aula (e ela não é gratuita),
-// o botão "Próximo" aponta para a oferta em vez da aula
+// o botão retorna ao painel de acessos; a oferta pública foi retirada.
 let nextHref: string | null = null;
 let nextLabel: string | null = null;
 if (nextLesson) {
   const nextRequiresPayment = !nextLesson.is_free;
   const hasNextAccess = hasAccess(accessList, nextLesson.product_slug);
   if (nextRequiresPayment && !hasNextAccess) {
-    nextHref = '/video-ia/oferta/';
-    nextLabel = `Próximo: ${nextLesson.title} (desbloquear)`;
+    nextHref = '/membros/';
+    nextLabel = 'Voltar aos meus acessos';
   } else {
     nextHref = `/membros/aulas/${nextLesson.slug}/`;
     nextLabel = `Próximo: ${nextLesson.title}`;

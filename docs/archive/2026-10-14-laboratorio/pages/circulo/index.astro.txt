@@ -1,0 +1,8 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import WhatsAppCTA from '../../components/WhatsAppCTA.astro';
+---
+<Layout title="Acesso aos materiais | Ricardo Tocha" description="Acesso aos materiais existentes e contato com Ricardo Tocha." noindex>
+  <Nav /><section class="site-hero"><div class="site-wrap site-reading"><h1>Acesso aos materiais</h1><p class="site-lead">O site agora é dedicado aos meus serviços de implementação e acompanhamento. Se você já tem materiais liberados, use sua área de acesso.</p><p><a class="site-link" href="/membros/login/">Entrar na área de acesso →</a></p><WhatsAppCTA context="meu acesso aos materiais" label="Falar sobre meu acesso" /></div></section>
+</Layout>

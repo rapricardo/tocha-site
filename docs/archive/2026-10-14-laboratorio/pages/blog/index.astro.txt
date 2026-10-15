@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import ServiceCTA from '../../components/service/ServiceCTA.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+---
+<Layout title="Conteúdo | Ricardo Tocha" description="Processos, decisões e implementação com IA no trabalho das empresas.">
+  <Nav /><section class="site-hero"><div class="site-wrap"><p class="site-eyebrow">Conteúdo</p><h1>Decisões e implementação no trabalho real.</h1><p class="site-lead">Análises sobre processos, produto, marketing e IA, com atenção ao que muda na operação.</p></div></section>
+  <section class="site-section"><div class="site-wrap site-reading">
+    {posts.length === 0 ? <p>Acompanhe minhas publicações no <a class="site-link" href="https://www.linkedin.com/in/ricardo-ramos-6453a49b" target="_blank" rel="noopener noreferrer">LinkedIn →</a></p> : posts.map(post => <article class="site-item"><time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time><h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2><p>{post.data.description}</p></article>)}
+    <p class="site-related"><a href="/manifesto/">Meus critérios para o trabalho com IA →</a></p>
+  </div></section><ServiceCTA />
+</Layout>

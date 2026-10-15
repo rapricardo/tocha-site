@@ -1,0 +1,8 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import WhatsAppCTA from '../../components/WhatsAppCTA.astro';
+---
+<Layout title="Materiais de produção com IA | Ricardo Tocha" description="Acesso aos materiais existentes e contato com Ricardo Tocha." noindex>
+  <Nav /><section class="site-hero"><div class="site-wrap site-reading"><h1>Materiais de produção com IA</h1><p class="site-lead">A venda do pacote de produção foi encerrada. Quem já comprou pode continuar acessando os materiais pela sua conta.</p><p><a class="site-link" href="/membros/login/">Entrar na área de acesso →</a></p><WhatsAppCTA context="meu acesso aos materiais" label="Falar sobre meu acesso" /></div></section>
+</Layout>

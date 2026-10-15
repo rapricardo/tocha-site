@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+---
+<Layout title="Contexto da produção com IA | Arquivo" description="Gravação anterior preservada para consulta." noindex>
+  <Nav /><section class="site-hero"><div class="site-wrap"><p class="site-eyebrow">Arquivo de conteúdo</p><h1>Contexto da produção com IA</h1><p class="site-lead">Gravação de uma etapa anterior do trabalho, preservada para consulta. Referências a ofertas, preços, ferramentas e comunidade não descrevem a atuação atual.</p><div class="aspect-video"><iframe
+          class="w-full h-full"
+          src="https://www.youtube.com/embed/GcP5vICEyvs"
+          title="Módulo 1 — A Oportunidade dos Vídeos com IA"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe></div><p class="site-related"><a href="/video-ia/">Produção no contexto dos serviços atuais →</a></p><a class="site-link" href="/membros/login/">Acessar meus materiais →</a></div></section>
+</Layout>

@@ -1,0 +1,6 @@
+---
+import ServicePage from "../../layouts/ServicePage.astro";
+---
+<ServicePage title="Ângulo · Prospecção | Ricardo Tocha" description="Escolhi o Ângulo para apoiar a prospecção dos meus serviços: organizar oportunidades, contexto e próximos passos." label="Ângulo · Prospecção" heading="Encontrar um contato é o começo da conversa." intro="Escolhi o Ângulo para apoiar a prospecção dos meus serviços: organizar oportunidades, contexto e próximos passos." context="a prospecção e a continuidade das conversas comerciais">
+<section class="site-section"><div class="site-wrap"><div class="site-grid"><article class="site-item"><h2>Escolher o público</h2><p>Definir o problema que a oferta resolve, quem faz sentido abordar e de onde vêm os contatos.</p></article><article class="site-item"><h2>Preparar a conversa</h2><p>Reunir contexto e conduzir uma abordagem relevante, com revisão humana e respeito à escolha de quem não quer continuar.</p></article><article class="site-item"><h2>Dar continuidade</h2><p>Registrar responsável e próximo passo. O Ângulo aparece aqui como ferramenta de trabalho; sua comercialização independente não está definida.</p></article></div></div></section>
+</ServicePage>
