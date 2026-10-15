@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import ServiceCTA from '../../components/service/ServiceCTA.astro';
+---
+<Layout title="Como penso o trabalho | Ricardo Tocha" description="Processo, contexto, execução, responsabilidade e revisão orientam meu trabalho com IA.">
+  <Nav />
+  <section class="site-hero"><div class="site-wrap"><p class="site-eyebrow">Como penso o trabalho</p><h1>IA precisa fazer sentido na execução.</h1><p class="site-lead">A escolha da ferramenta começa pelo problema. O trabalho precisa chegar à operação e deixar condições para avaliar o que mudou.</p></div></section>
+  <section class="site-section"><div class="site-wrap site-reading">
+    <h2>Processo antes da ferramenta.</h2><p>Uma tarefa repetida pode esconder uma etapa desnecessária ou uma responsabilidade mal definida. Entender sua finalidade vem antes de automatizar.</p>
+    <h2>Contexto para executar.</h2><p>Regras, informações e decisões precisam estar acessíveis no fluxo de trabalho. Isso orienta pessoas e sistemas e reduz a necessidade de reconstruir o contexto.</p>
+    <h2>Custo pelo trabalho entregue.</h2><p>Avalio ferramentas pelo resultado, pelo tempo e pelas interações necessárias. A escolha depende da tarefa e do critério de qualidade.</p>
+    <h2>Decisão com acompanhamento.</h2><p>Registrar situação inicial, ação, responsável e prazo permite voltar ao combinado. A revisão orienta o próximo passo, inclusive quando a hipótese não se confirma.</p>
+    <h2>Responsabilidade na implementação.</h2><p>Defino o que pode ser delegado e o que exige decisão humana. Conteúdo falso, práticas enganosas e uso indevido de dados ficam fora do trabalho.</p>
+  </div></section>
+  <ServiceCTA />
+</Layout>

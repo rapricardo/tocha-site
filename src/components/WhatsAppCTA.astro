@@ -1,0 +1,7 @@
+---
+interface Props { context?: string; label?: string; }
+const { context = 'sua operação', label = 'Conversar no WhatsApp' } = Astro.props;
+const message = `Olá, Ricardo. Vim pelo seu site e gostaria de conversar sobre ${context}.`;
+const href = `https://wa.me/5519999764835?text=${encodeURIComponent(message)}`;
+---
+<a href={href} class="site-button" data-whatsapp-cta={context} target="_blank" rel="noopener noreferrer">{label}<span aria-hidden="true">↗</span></a>

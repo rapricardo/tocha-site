@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import ServiceCTA from '../../components/service/ServiceCTA.astro';
+import { Image } from 'astro:assets';
+import tochaBio from '../../assets/tocha-bio.webp';
+---
+<Layout title="Sobre Ricardo Tocha | Negócio e implementação" description="Marketing, vendas, produto, processos e desenvolvimento conectados para implementar melhorias na operação.">
+  <Nav />
+  <section class="site-hero"><div class="site-wrap site-bio">
+    <div><p class="site-eyebrow">Ricardo Tocha</p><h1>Entender o negócio. Colocar a mudança em funcionamento.</h1><p class="site-lead">Minha trajetória reúne marketing, vendas, produto, design, processos e desenvolvimento. Uso essa combinação para ligar a decisão à execução.</p></div>
+    <Image src={tochaBio} alt="Ricardo Tocha" width={360} class="site-portrait" />
+  </div></section>
+  <section class="site-section"><div class="site-wrap site-reading"><h2>O trabalho parte da operação.</h2><p>Já estruturei funis B2B, desenvolvi formação comercial e construí sistemas para empresas. Hoje conecto essa experiência à implementação com IA.</p><p>Começo pelo que precisa mudar: uma proposta sem acompanhamento, uma passagem de informação que falha ou uma entrega desconectada do financeiro. O escopo define quais processos e ferramentas entram no trabalho.</p><p>Conduzo a implementação com a equipe e acompanho a execução. O critério é o que funciona no contexto do cliente e o que os dados permitem concluir.</p><a href="/#projetos" class="site-link">Ver projetos →</a></div></section>
+  <section class="site-section"><div class="site-wrap site-reading"><h2>Critérios para usar IA.</h2><p>Contexto, responsabilidade e revisão fazem parte do trabalho. A ferramenta precisa contribuir para a execução, e seu custo precisa fazer sentido para o resultado.</p><a href="/manifesto/" class="site-link">Como penso o trabalho →</a></div></section>
+  <ServiceCTA />
+</Layout>

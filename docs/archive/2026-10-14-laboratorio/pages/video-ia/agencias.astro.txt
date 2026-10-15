@@ -1,0 +1,6 @@
+---
+export const prerender = false;
+const destination = new URL('/video-ia/', Astro.url);
+destination.search = Astro.url.search;
+return Astro.redirect(destination.pathname + destination.search + destination.hash, 301);
+---

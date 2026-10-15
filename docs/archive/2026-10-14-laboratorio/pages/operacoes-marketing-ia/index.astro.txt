@@ -1,0 +1,6 @@
+---
+import ServicePage from "../../layouts/ServicePage.astro";
+---
+<ServicePage title="Marketing · Processos e implementação | Ricardo Tocha" description="Conecto planejamento, produção e acompanhamento para que cada entrega tenha contexto, responsável e próximo passo." label="Marketing · Processos e implementação" heading="Menos tempo reorganizando o trabalho. Mais clareza para executar." intro="Conecto planejamento, produção e acompanhamento para que cada entrega tenha contexto, responsável e próximo passo." context="os processos e a execução do meu marketing">
+<section class="site-section"><div class="site-wrap"><div class="site-grid"><article class="site-item"><h2>O problema</h2><p>Briefings, aprovações e resultados ficam espalhados. A equipe refaz contexto e perde tempo entre uma etapa e outra.</p></article><article class="site-item"><h2>O trabalho</h2><p>Organizar o fluxo, conectar ferramentas e implementar apoio de IA nas tarefas adequadas. Preservar o critério da equipe sobre mensagem, qualidade e publicação.</p></article><article class="site-item"><h2>A revisão</h2><p>Acompanhar tempo de execução, retrabalho e entrega. Ajustar o processo a partir do que aconteceu, conforme o escopo combinado.</p></article></div></div></section>
+</ServicePage>

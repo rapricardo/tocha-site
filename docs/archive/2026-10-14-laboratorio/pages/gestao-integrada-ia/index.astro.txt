@@ -1,0 +1,6 @@
+---
+import ServicePage from "../../layouts/ServicePage.astro";
+---
+<ServicePage title="Mercúrio · Gestão de serviços | Ricardo Tocha" description="Mercúrio conecta propostas, execução e financeiro em operações de serviços, com projetos, entregas e tarefas recorrentes." label="Mercúrio · Gestão de serviços" heading="O que foi vendido precisa chegar à entrega e ao financeiro." intro="Mercúrio conecta propostas, execução e financeiro em operações de serviços, com projetos, entregas e tarefas recorrentes." context="a relação entre propostas, execução e financeiro na minha empresa">
+<section class="site-section"><div class="site-wrap"><div class="site-grid"><article class="site-item"><h2>O problema</h2><p>A proposta fecha, mas a operação precisa reconstruir o escopo. A entrega acontece, mas o financeiro não recebe a informação necessária para faturar.</p></article><article class="site-item"><h2>O trabalho</h2><p>Mapear o fluxo e organizar etapas, responsabilidades e informações. Configurar e integrar o sistema conforme a operação, com participação de quem vai usá-lo.</p></article><article class="site-item"><h2>A revisão</h2><p>Acompanhar a correspondência entre contratado, executado e faturado. O Mercúrio nasceu do trabalho na Plana; cada implantação precisa considerar o processo do cliente.</p></article></div></div></section>
+</ServicePage>
