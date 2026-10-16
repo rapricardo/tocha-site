@@ -12,6 +12,27 @@ export function mountLab() {
   let active = Math.max(0, panels.findIndex(panel => `#${panel.id}` === location.hash));
   let paused = reduced.matches, navigation = 0;
 
+  function updateReadingHint() {
+    const panel = panels[active];
+    home!.dataset.moreContent = String(panel.scrollHeight - panel.clientHeight - panel.scrollTop > 8);
+  }
+  function keepActiveMapVisible() {
+    if (!matchMedia('(max-width: 799px)').matches) return;
+    const link = map.find(link => link.hasAttribute('aria-current'));
+    if (link) {
+      const nav = link.parentElement!;
+      nav.scrollLeft = link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2;
+    }
+  }
+  const readingObserver = new ResizeObserver(updateReadingHint);
+  panels.forEach(panel => {
+    panel.addEventListener('scroll', updateReadingHint, { passive: true });
+    readingObserver.observe(panel);
+    const copy = panel.querySelector('.room-copy');
+    if (copy) readingObserver.observe(copy);
+  });
+  window.addEventListener('resize', keepActiveMapVisible);
+
   function arrive(token: number, focus: boolean) {
     if (token !== navigation) return;
     home!.dataset.transition = 'false';
@@ -36,6 +57,8 @@ export function mountLab() {
       if (link.hash === `#${panels[index].id}`) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
+    keepActiveMapVisible();
+    updateReadingHint();
     hotspots.forEach(link => link.inert = index !== 1 || home!.dataset.transition === 'true');
     if (updateHistory && location.hash !== `#${panels[index].id}`) history.pushState(null, '', `#${panels[index].id}`);
     if (scene) {
